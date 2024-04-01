@@ -3,7 +3,8 @@ import { readAllEmployees, readEmployee, createEmployee, updateEmployee, deleteE
 import {useEffect,useState} from 'react';
 
 const ViewEmployee = () => {
-  
+    const [employeesData,setEmployeesData]=useState([]);
+
     const readAllEmployeesQuery = useQuery({
         queryKey: ['AllEmployees'],
         queryFn: ()=>readAllEmployees(),
@@ -16,11 +17,11 @@ const ViewEmployee = () => {
 
     useEffect(()=>{
         if(readAllEmployeesQuery.isSuccess){
-            setEmployeesData(readAllEmployeesQuery.data);
+            setEmployeesData(readAllEmployeesQuery.data.results);
         }
     },[readAllEmployeesQuery.isSuccess,readAllEmployeesQuery.data])
 
-    const [employeesData,setEmployeesData]=useState([]);
+    
 
     // Read one data
     async function handleReadEmployee(employeeId){
@@ -32,9 +33,10 @@ const ViewEmployee = () => {
         e.preventDefault();
     }
 
+    console.log('read', employeesData)
     return (
         <>
-            
+            asdf
         </>
     )
 }
