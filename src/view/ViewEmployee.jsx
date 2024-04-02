@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { readAllEmployees, readEmployee, createEmployee, updateEmployee, deleteEmployee, restoreEmployee, permanentDeleteEmployee } from '../api/employeeApi';
 import {useEffect,useState} from 'react';
-
+import {Link} from 'react-router-dom';
 const ViewEmployee = () => {
     const [employeesData,setEmployeesData]=useState([]);
 
@@ -33,10 +33,28 @@ const ViewEmployee = () => {
         e.preventDefault();
     }
 
-    console.log('read', employeesData)
     return (
         <>
-            asdf
+            <h2>Employees</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Emp Id</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        employeesData.map((obj,index)=>(
+                            <tr key={index+1}>
+                                <td>{obj.employee_id}</td>
+                                <td>{obj.name}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+            <Link to ="/">Back</Link>
         </>
     )
 }

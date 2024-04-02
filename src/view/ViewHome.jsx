@@ -1,7 +1,10 @@
+import {Link} from 'react-router-dom';
+
 const ViewHome=()=>{
     return (
         <>
-            THIS IS HOME PAGE
+            <Link to='/employee'>Employees</Link>
+            <Link to='/activity'>Activities</Link>
         </>
     )
 }
