@@ -31,7 +31,7 @@ const restoreEmployee=async(employee_id)=>{
 }
 
 const permanentDeleteEmployee=async(employee_id)=>{
-    const response = await rootApi.put(`/employee/perma/delete/${employee_id}`);
+    const response = await rootApi.delete(`/employee/perma/delete/${employee_id}`);
     return response.data;
 }
 

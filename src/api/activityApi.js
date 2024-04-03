@@ -35,10 +35,14 @@ const restoreActivity=async(activity_id)=>{
 }
 
 const permanentDeleteActivity=async(activity_id)=>{
-    const response = await rootApi.put(`/activity/perma/delete/${activity_id}`);
+    const response = await rootApi.delete(`/activity/perma/delete/${activity_id}`);
     return response.data;
 }
 
+const readAllDeletedActivities=async()=>{
+    const response = await rootApi.get('/activity/deleted/activities');
+    return response.data;
+}
 
 export {
     readAllActivities,
@@ -48,5 +52,6 @@ export {
     deleteActivity,
     restoreActivity,
     permanentDeleteActivity,
-    readActivityByEmployeeId
+    readActivityByEmployeeId,
+    readAllDeletedActivities
 }
