@@ -24,7 +24,7 @@ const updateActivity=async(data)=>{
     return response.data;
 }
 
-const deleteActivity=async(activity_id)=>{
+const deleteActivity=async(activity_id)=>{//soft deleter
     const response = await rootApi.delete(`/activity/delete/${activity_id}`);
     return response.data;
 }
@@ -34,13 +34,18 @@ const restoreActivity=async(activity_id)=>{
     return response.data;
 }
 
-const permanentDeleteActivity=async(activity_id)=>{
+const permanentDeleteActivity=async(activity_id)=>{//hard delete
     const response = await rootApi.delete(`/activity/perma/delete/${activity_id}`);
     return response.data;
 }
 
 const readAllDeletedActivities=async()=>{
     const response = await rootApi.get('/activity/deleted/activities');
+    return response.data;
+}
+
+const readRawAllActivitiesByEmployeesId=async()=>{
+    const response = await rootApi.get('/activity/raw/activites/all');
     return response.data;
 }
 
@@ -53,5 +58,6 @@ export {
     restoreActivity,
     permanentDeleteActivity,
     readActivityByEmployeeId,
-    readAllDeletedActivities
+    readAllDeletedActivities,
+    readRawAllActivitiesByEmployeesId
 }

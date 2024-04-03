@@ -2,17 +2,17 @@ import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EditActivity from '../edit/EditActivity.jsx'
-import { createActivity, readAllActivities, readActivity, updateActivity, restoreActivity, permanentDeleteActivity, deleteActivity, readAllDeletedActivities } from '../api/activityApi.js'
+import { createActivity, readRawAllActivitiesByEmployeesId, permanentDeleteActivity, readAllDeletedActivities, deleteActivity, restoreActivity } from '../api/activityApi.js'
 const ViewActivity = () => {
     //OBTAIN DEFAULTS/QUERIES
     const [activities, setActivities] = useState([]);
     const [deletedActivities, setDeletedActivities] = useState([]);
     const [showEditActivity, setShowEditActivity] = useState(false)
-    const [activityToEdit,setActivityToEdit]=useState({});
+    const [activityToEdit, setActivityToEdit] = useState({});
 
     const readAllActivitiesQueries = useQuery({
         queryKey: ['AllActivities'],
-        queryFn: () => readAllActivities(),
+        queryFn: () => readRawAllActivitiesByEmployeesId(),
         retry: 1
     })
 
@@ -54,29 +54,46 @@ const ViewActivity = () => {
         await readAllActivitiesQueries.refetch();
     }
 
-    function onDelete(activityId) {
+    function onArchive(activityId) {
         const confirmBox = window.confirm("You really want to delete?");
         if (confirmBox) {
-            const response = permanentDeleteActivity(activityId);
+            const response = deleteActivity(activityId);
             readAllActivitiesQueries.refetch();
         }
     }
+    function onDelete(activityId) {
+        const confirmBox = window.confirm("You really want to delete?");
+        if (confirmBox) {
+            const response = permanentDeleteActivity(activityId)
+            readAllDeletedActivityQueries.refetch();
+        }
+    }
 
-    function onEdit(activity){        
+    function onRestore(activityId) {
+        const confirmBox = window.confirm("You really want to restore?");
+        if (confirmBox) {
+            const response = restoreActivity(activityId)
+            readAllDeletedActivityQueries.refetch();
+        }
+    }
+
+    function onEdit(activity) {
         setShowEditActivity(true)
         setActivityToEdit(activity)
     }
 
-    function hideEditActivity(){
+    function hideEditActivity() {
         setShowEditActivity(false);
         readAllActivitiesQueries.refetch();
     }
+
+    console.log('activities', deletedActivities)
     return (
         <>
             <h2>Activity</h2>
             {
                 showEditActivity &&
-                <EditActivity 
+                <EditActivity
                     activityToEdit={activityToEdit}
                     hideEditActivity={hideEditActivity}
                 />
@@ -108,10 +125,12 @@ const ViewActivity = () => {
                                 <tr key={index + 1}>
                                     <td>{obj.activity_id}</td>
                                     <td>{obj.activity}</td>
-                                    <td>{obj.employee_id}</td>
+                                    <td>{obj.created_by}</td>
                                     <td>
-                                        <button onClick={()=>onEdit(obj)}>Edit</button>
-                                        <button onClick={() => onDelete(obj.activity_id)}>Delete</button>
+                                        <button onClick={() => onEdit(obj)}>Edit</button>
+                                        <button onClick={() => {
+                                            onArchive(obj.activity_id), readAllActivitiesQueries.refetch()
+                                        }}>Archive</button>
                                     </td>
                                 </tr>
                             ))
@@ -119,6 +138,8 @@ const ViewActivity = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* ARCHIVE LIST */}
             <div>
                 <table>
                     <thead>
@@ -137,6 +158,7 @@ const ViewActivity = () => {
                                     <td>{obj.activity}</td>
                                     <td>{obj.employee_id}</td>
                                     <td>
+                                        <button onClick={() => onRestore(obj.activity_id)}>Restore</button>
                                         <button onClick={() => onDelete(obj.activity_id)}>Delete</button>
                                     </td>
                                 </tr>
